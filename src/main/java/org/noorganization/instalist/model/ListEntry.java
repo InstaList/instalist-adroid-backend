@@ -58,8 +58,17 @@ public class ListEntry {
             Product.COLUMN.ID + ") ON UPDATE CASCADE ON DELETE CASCADE, " +
             "FOREIGN KEY (list) REFERENCES list (_id) ON UPDATE CASCADE ON DELETE CASCADE)";
 
+    /**
+     * The unique id.
+     */
     public String mUUID;
+    /**
+     * The list where it is placed.
+     */
     public ShoppingList mList;
+    /**
+     * The referenced product.
+     */
     public Product mProduct;
     /**
      * The amount of product that's listed
@@ -69,6 +78,9 @@ public class ListEntry {
      * Whether a product is struck through, i.e. because it's already bought.
      */
     public boolean mStruck;
+    /**
+     * Priority of this listentry.
+     */
     public int mPriority;
 
     public ListEntry() {

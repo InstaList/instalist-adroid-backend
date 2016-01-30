@@ -58,8 +58,17 @@ public class TaggedProduct {
             + ")";
 
 
+    /**
+     * Unique taggedproduct id.
+     */
     public String mUUID;
+    /**
+     * The associated tag of this element.
+     */
     public Tag mTag;
+    /**
+     * The associated product of this element.
+     */
     public Product mProduct;
 
     /**
