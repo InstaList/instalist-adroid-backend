@@ -21,9 +21,10 @@ public class SQLiteUtils {
 
     /**
      * Prepends a selection-string using a SQL-AND-conjunction.
+     *
      * @param _prependedSelection The additional selection.
-     * @param _originalSelection The original selection string. May be null (that means, there was
-     *                           no original selection).
+     * @param _originalSelection  The original selection string. May be null (that means, there was
+     *                            no original selection).
      * @return A combined selection string.
      */
     public static String prependSelection(@NonNull String _prependedSelection, String _originalSelection) {
@@ -37,17 +38,19 @@ public class SQLiteUtils {
     /**
      * Alias for {@link #prependSelectionArgs(String[], String[])}. But for only one additional
      * argument for better readable code.
+     *
      * @see #prependSelectionArgs(String[], String[])
      */
     public static String[] prependSelectionArgs(@NonNull String _prependedSelectionArg,
                                                 String[] _originalSelectionArgs) {
-        return prependSelectionArgs(new String[]{ _prependedSelectionArg }, _originalSelectionArgs);
+        return prependSelectionArgs(new String[]{_prependedSelectionArg}, _originalSelectionArgs);
     }
 
     /**
      * Prepends selection args.
+     *
      * @param _prependedSelectionArgs The new selection-arguments to prepend.
-     * @param _originalSelectionArgs The previous selection-arguments. May be null.
+     * @param _originalSelectionArgs  The previous selection-arguments. May be null.
      * @return The combined array of selection arguments. If _originalSelectionArgs are null,
      * _prependedSelectionArgs get returned.
      */
@@ -68,8 +71,9 @@ public class SQLiteUtils {
     /**
      * Generate a column map for usage with
      * {@link android.database.sqlite.SQLiteQueryBuilder#setProjectionMap(Map)}.
-     * @param _table The table to generate the map for. The table is not checked for existence but
-     *               must not be empty.
+     *
+     * @param _table  The table to generate the map for. The table is not checked for existence but
+     *                must not be empty.
      * @param _column As many columns as needed. May not be empty.
      * @return A Map containing all given columns projection-maps.
      */
@@ -81,12 +85,19 @@ public class SQLiteUtils {
         return rtn;
     }
 
+    /**
+     * Generates for the table in the given database a unique id.
+     *
+     * @param _db    the database where the table is.
+     * @param _table the table to get the uuid for.
+     * @return a reallly unique id.
+     */
     public static UUID generateId(SQLiteDatabase _db, String _table) {
         UUID rtn = null;
         while (rtn == null) {
             rtn = UUID.randomUUID();
-            Cursor counter = _db.query(_table, new String[]{ "_id" },
-                    "_id = ?", new String[]{ rtn.toString() }, null, null, null);
+            Cursor counter = _db.query(_table, new String[]{"_id"},
+                    "_id = ?", new String[]{rtn.toString()}, null, null, null);
             if (counter.getCount() != 0) {
                 rtn = null;
             }
