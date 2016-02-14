@@ -1,4 +1,4 @@
-package org.noorganization.commondata;
+package org.noorganization.instalist.commondata;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

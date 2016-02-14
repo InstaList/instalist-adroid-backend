@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">InstantListCommonData</string>
+    <string name="read_write_shoppinglists">Read and change shopping-lists</string>
 </resources>
