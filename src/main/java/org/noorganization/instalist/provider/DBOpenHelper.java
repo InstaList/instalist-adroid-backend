@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.noorganization.instalist.model.Category;
 import org.noorganization.instalist.model.Ingredient;
 import org.noorganization.instalist.model.ListEntry;
+import org.noorganization.instalist.model.Log;
 import org.noorganization.instalist.model.Product;
 import org.noorganization.instalist.model.Recipe;
 import org.noorganization.instalist.model.ShoppingList;
@@ -37,6 +38,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         _db.execSQL(TaggedProduct.DATABASE_CREATE);
         _db.execSQL(Ingredient.DATABASE_CREATE);
         _db.execSQL(Recipe.DATABASE_CREATE);
+        _db.execSQL(Log.DB_CREATE_V1);
+        // create trigger
+        _db.execSQL(Log.DB_TRIGGER_LIST_INSERTION);
+        _db.execSQL(Log.DB_TRIGGER_LIST_DELETION);
+        _db.execSQL(Log.DB_TRIGGER_LIST_UPDATE);
+
     }
 
     @Override

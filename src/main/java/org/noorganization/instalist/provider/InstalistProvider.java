@@ -15,6 +15,7 @@ import org.noorganization.instalist.provider.internal.CategoryProvider;
 import org.noorganization.instalist.provider.internal.IInternalProvider;
 import org.noorganization.instalist.provider.internal.IngredientProvider;
 import org.noorganization.instalist.provider.internal.ListEntryProvider;
+import org.noorganization.instalist.provider.internal.LogProvider;
 import org.noorganization.instalist.provider.internal.ProductProvider;
 import org.noorganization.instalist.provider.internal.RecipeProvider;
 import org.noorganization.instalist.provider.internal.ShoppingListProvider;
@@ -62,6 +63,7 @@ public class InstalistProvider extends ContentProvider {
         IInternalProvider listEntryProvider = new ListEntryProvider(getContext());
         IInternalProvider ingredientProvider = new IngredientProvider(getContext());
         IInternalProvider recipeProvider = new RecipeProvider(getContext());
+        IInternalProvider logProvider = new LogProvider(getContext());
 
         categoryProvider.onCreate(mDatabase);
         productProvider.onCreate(mDatabase);
@@ -72,6 +74,7 @@ public class InstalistProvider extends ContentProvider {
         listEntryProvider.onCreate(mDatabase);
         ingredientProvider.onCreate(mDatabase);
         recipeProvider.onCreate(mDatabase);
+        logProvider.onCreate(mDatabase);
 
         mInternalProviders = new HashMap<>();
         mInternalProviders.put("category", categoryProvider);
@@ -83,6 +86,8 @@ public class InstalistProvider extends ContentProvider {
         mInternalProviders.put("entry", listEntryProvider);
         mInternalProviders.put("ingredient", ingredientProvider);
         mInternalProviders.put("recipe", recipeProvider);
+        mInternalProviders.put("log",logProvider);
+
         return true;
     }
 

@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.noorganization.instalist.model.ListEntry;
-import org.noorganization.instalist.model.ShoppingList;
 import org.noorganization.instalist.provider.InstalistProvider;
 import org.noorganization.instalist.utils.SQLiteUtils;
 
