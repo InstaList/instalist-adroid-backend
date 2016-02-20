@@ -1,7 +1,7 @@
 package org.noorganization.instalist.enums;
 
 /**
- * The type of the model.
+ * The type of the model as enum.
  * Created by Desnoo on 16.02.2016.
  */
 public enum eModelType {

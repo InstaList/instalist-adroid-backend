@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.noorganization.instalist.model.Category;
 import org.noorganization.instalist.model.Ingredient;
 import org.noorganization.instalist.model.ListEntry;
-import org.noorganization.instalist.model.Log;
+import org.noorganization.instalist.model.LogInfo;
 import org.noorganization.instalist.model.Product;
 import org.noorganization.instalist.model.Recipe;
 import org.noorganization.instalist.model.ShoppingList;
@@ -21,7 +21,7 @@ import org.noorganization.instalist.model.Unit;
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
 
-    public static int VERSION = 1;
+    public static int VERSION = 2;
 
     public DBOpenHelper(Context _context, String _name) {
         super(_context, _name, null, VERSION);
@@ -38,11 +38,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         _db.execSQL(TaggedProduct.DATABASE_CREATE);
         _db.execSQL(Ingredient.DATABASE_CREATE);
         _db.execSQL(Recipe.DATABASE_CREATE);
-        _db.execSQL(Log.DB_CREATE_V1);
-        // create trigger
-        _db.execSQL(Log.DB_TRIGGER_LIST_INSERTION);
-        _db.execSQL(Log.DB_TRIGGER_LIST_DELETION);
-        _db.execSQL(Log.DB_TRIGGER_LIST_UPDATE);
+
 
     }
 
@@ -58,8 +54,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase _db, int _oldVersion, int _newVersion) {
         int currentVersion = _oldVersion;
         // Example:
-        //if (currentVersion < 2 && 2 <= _newVersion) {
-        //    // do upgrade to version 2
-        //}
+        if (currentVersion < 2 && 2 <= _newVersion) {
+            // do upgrade to version 2
+            // inroduction of triggers and logging db
+            _db.execSQL(LogInfo.DB_CREATE_V1);
+            // create trigger
+            _db.execSQL(LogInfo.DB_TRIGGER_LIST_INSERTION);
+            _db.execSQL(LogInfo.DB_TRIGGER_LIST_DELETION);
+            _db.execSQL(LogInfo.DB_TRIGGER_LIST_UPDATE);
+        }
     }
 }

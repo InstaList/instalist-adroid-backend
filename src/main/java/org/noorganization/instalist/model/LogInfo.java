@@ -10,7 +10,7 @@ import java.util.Date;
  * The log includes the actions performed on the elements of the clients.
  * Created by Desnoo on 16.02.2016.
  */
-public class Log {
+public class LogInfo {
 
     /**
      * The id of the log.
@@ -38,7 +38,7 @@ public class Log {
     private Date mActionDate;
 
 
-    public Log(int _id, String itemUuuid, eActionType action, eModelType modelType, Date actionDate) {
+    public LogInfo(int _id, String itemUuuid, eActionType action, eModelType modelType, Date actionDate) {
         mId = _id;
         mItemUuuid = itemUuuid;
         mAction = action;
@@ -46,7 +46,7 @@ public class Log {
         mActionDate = actionDate;
     }
 
-    public static final String TABLE_NAME = "category";
+    public static final String TABLE_NAME = "error_log";
 
     /**
      * Column names that does not contain the table prefix.
@@ -79,13 +79,13 @@ public class Log {
             + COLUMN.ITEM_UUID + " TEXT NOT NULL, "
             + COLUMN.ACTION + " INTEGER NOT NULL, "
             + COLUMN.ACTION_DATE + " TEXT NOT NULL, "
-            + COLUMN.MODEL + " INTEGER NOT NULL, "
+            + COLUMN.MODEL + " INTEGER NOT NULL "
             + ")";
 
     public static String DB_TRIGGER_LIST_INSERTION = "CREATE TRIGGER trackListInsertTrigger "
             + " AFTER INSERT ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
             + " BEGIN "
-            + " INSERT INTO " + Log.TABLE_NAME + " ( "
+            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
             + COLUMN.ITEM_UUID + ","
             + COLUMN.ACTION + ","
             + COLUMN.MODEL + ","
@@ -102,7 +102,7 @@ public class Log {
     public static String DB_TRIGGER_LIST_DELETION = "CREATE TRIGGER trackListDeletionTrigger "
             + " AFTER DELETE ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
             + " BEGIN "
-            + " INSERT INTO " + Log.TABLE_NAME + " ( "
+            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
             + COLUMN.ITEM_UUID + ","
             + COLUMN.ACTION + ","
             + COLUMN.MODEL + ","
@@ -119,7 +119,7 @@ public class Log {
     public static String DB_TRIGGER_LIST_UPDATE = "CREATE TRIGGER trackListUpdateTrigger "
             + " AFTER UPDATE ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
             + " BEGIN "
-            + " INSERT INTO " + Log.TABLE_NAME + " ( "
+            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
             + COLUMN.ITEM_UUID + ","
             + COLUMN.ACTION + ","
             + COLUMN.MODEL + ","

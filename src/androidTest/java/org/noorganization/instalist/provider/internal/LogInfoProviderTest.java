@@ -6,7 +6,7 @@ import junit.framework.TestCase;
  * // TODO implement!
  * Created by Desnoo on 16.02.2016.
  */
-public class LogProviderTest extends TestCase {
+public class LogInfoProviderTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();

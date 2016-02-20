@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.noorganization.instalist.model.LogInfo;
 import org.noorganization.instalist.provider.InstalistProvider;
 
 /**
@@ -45,7 +46,7 @@ public class LogProvider implements IInternalProvider {
     public Cursor query(@NonNull Uri _uri, String[] _projection, String _selection, String[] _selectionArgs, String _sortOrder) {
         switch (mMatcher.match(_uri)) {
             case LOG_DIRECTORY:
-                return mDatabase.query(org.noorganization.instalist.model.Log.TABLE_NAME, _projection, _selection, _selectionArgs, null, null, _sortOrder);
+                return mDatabase.query(LogInfo.TABLE_NAME, _projection, _selection, _selectionArgs, null, null, _sortOrder);
             default:
                 return null;
         }
@@ -73,7 +74,7 @@ public class LogProvider implements IInternalProvider {
     public int delete(@NonNull Uri _uri, String _selection, String[] _selectionArgs) {
         switch (mMatcher.match(_uri)) {
             case LOG_DIRECTORY:
-                return mDatabase.delete(org.noorganization.instalist.model.Log.TABLE_NAME, _selection, _selectionArgs);
+                return mDatabase.delete(LogInfo.TABLE_NAME, _selection, _selectionArgs);
             default:
                 return 0;
         }
