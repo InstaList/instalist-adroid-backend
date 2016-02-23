@@ -21,7 +21,7 @@ import org.noorganization.instalist.model.Unit;
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
 
-    public static int VERSION = 2;
+    public static int VERSION = 3;
 
     public DBOpenHelper(Context _context, String _name) {
         super(_context, _name, null, VERSION);
@@ -38,8 +38,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         _db.execSQL(TaggedProduct.DATABASE_CREATE);
         _db.execSQL(Ingredient.DATABASE_CREATE);
         _db.execSQL(Recipe.DATABASE_CREATE);
-
-
+        _db.execSQL(LogInfo.DB_CREATE_V1);
+        // create trigger
+        _db.execSQL(LogInfo.DB_TRIGGER_LIST_INSERTION);
+        _db.execSQL(LogInfo.DB_TRIGGER_LIST_DELETION);
+        _db.execSQL(LogInfo.DB_TRIGGER_LIST_UPDATE);
     }
 
     @Override
@@ -54,8 +57,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase _db, int _oldVersion, int _newVersion) {
         int currentVersion = _oldVersion;
         // Example:
-        if (currentVersion < 2 && 2 <= _newVersion) {
-            // do upgrade to version 2
+        if (currentVersion < 3 && 3 <= _newVersion) {
+            // do upgrade to version 3
             // inroduction of triggers and logging db
             _db.execSQL(LogInfo.DB_CREATE_V1);
             // create trigger

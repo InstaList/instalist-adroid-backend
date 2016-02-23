@@ -27,7 +27,8 @@ public class SQLiteUtils {
      *                            no original selection).
      * @return A combined selection string.
      */
-    public static String prependSelection(@NonNull String _prependedSelection, String _originalSelection) {
+    public static String prependSelection(@NonNull String _prependedSelection,
+            String _originalSelection) {
         if (_originalSelection != null) {
             return "(" + _prependedSelection + ") AND (" + _originalSelection + ")";
         } else {
@@ -42,7 +43,7 @@ public class SQLiteUtils {
      * @see #prependSelectionArgs(String[], String[])
      */
     public static String[] prependSelectionArgs(@NonNull String _prependedSelectionArg,
-                                                String[] _originalSelectionArgs) {
+            String[] _originalSelectionArgs) {
         return prependSelectionArgs(new String[]{_prependedSelectionArg}, _originalSelectionArgs);
     }
 
@@ -55,13 +56,13 @@ public class SQLiteUtils {
      * _prependedSelectionArgs get returned.
      */
     public static String[] prependSelectionArgs(@NonNull String[] _prependedSelectionArgs,
-                                                String[] _originalSelectionArgs) {
+            String[] _originalSelectionArgs) {
         if (_originalSelectionArgs == null || _originalSelectionArgs.length == 0) {
             return _prependedSelectionArgs;
         }
 
-        int newArrayLength = _prependedSelectionArgs.length + _originalSelectionArgs.length;
-        String[] rtn = new String[newArrayLength];
+        int      newArrayLength = _prependedSelectionArgs.length + _originalSelectionArgs.length;
+        String[] rtn            = new String[newArrayLength];
         System.arraycopy(_prependedSelectionArgs, 0, rtn, 0, _prependedSelectionArgs.length);
         System.arraycopy(_originalSelectionArgs, 0, rtn, _prependedSelectionArgs.length,
                 _originalSelectionArgs.length);
@@ -77,7 +78,8 @@ public class SQLiteUtils {
      * @param _column As many columns as needed. May not be empty.
      * @return A Map containing all given columns projection-maps.
      */
-    public static Map<String, String> generateProjectionMap(@NonNull String _table, String... _column) {
+    public static Map<String, String> generateProjectionMap(@NonNull String _table,
+            String... _column) {
         Map<String, String> rtn = new ArrayMap<>(_column.length);
         for (String currentColumn : _column) {
             rtn.put(currentColumn, _table + "." + currentColumn);
@@ -90,7 +92,7 @@ public class SQLiteUtils {
      *
      * @param _db    the database where the table is.
      * @param _table the table to get the uuid for.
-     * @return a reallly unique id.
+     * @return a really unique id.
      */
     public static UUID generateId(SQLiteDatabase _db, String _table) {
         UUID rtn = null;
@@ -98,6 +100,28 @@ public class SQLiteUtils {
             rtn = UUID.randomUUID();
             Cursor counter = _db.query(_table, new String[]{"_id"},
                     "_id = ?", new String[]{rtn.toString()}, null, null, null);
+            if (counter.getCount() != 0) {
+                rtn = null;
+            }
+            counter.close();
+        }
+        return rtn;
+    }
+
+    /**
+     * Generates for the table in the given database a unique id for the specified column.
+     *
+     * @param _db     the database where the table is.
+     * @param _table  the table to get the uuid for.
+     * @param _column the column where the value should be unique.
+     * @return a really unique id.
+     */
+    public static UUID generateId(SQLiteDatabase _db, String _table, String _column) {
+        UUID rtn = null;
+        while (rtn == null) {
+            rtn = UUID.randomUUID();
+            Cursor counter = _db.query(_table, new String[]{_column},
+                    _column + " = ?", new String[]{rtn.toString()}, null, null, null);
             if (counter.getCount() != 0) {
                 rtn = null;
             }
