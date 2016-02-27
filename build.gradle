@@ -40,7 +40,7 @@ dependencies {
 
     compile 'com.fasterxml.jackson.core:jackson-core:2.7.1'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1-1'
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.7.1'
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.1'
     compile 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.7.1'

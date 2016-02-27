@@ -53,24 +53,25 @@ public class LogInfo {
      * Column names that does not contain the table prefix.
      */
     public final static class COLUMN {
-        public static final String ID          = "_id";
-        public static final String ITEM_UUID   = "item_uuid";
-        public static final String ACTION      = "action_id";
-        public static final String MODEL       = "model_id";
+        public static final String ID = "_id";
+        public static final String ITEM_UUID = "item_uuid";
+        public static final String ACTION = "action_id";
+        public static final String MODEL = "model_id";
         public static final String ACTION_DATE = "action_date";
 
         public static final String ALL_COLUMNS[] = {ID, ITEM_UUID, ACTION, MODEL, ACTION_DATE};
-        public static final String ALL_COLUMNS_WITH_DATE[] = {ID, ITEM_UUID, ACTION, MODEL, "datetime(" + ACTION_DATE + ") as " + ACTION_DATE};
+        public static final String ALL_COLUMNS_WITH_DATE[] = {ID, ITEM_UUID, ACTION, MODEL,
+                "datetime(" + ACTION_DATE + ") as " + ACTION_DATE};
     }
 
     /**
      * Column names that are prefixed with the table name. So like this TableName.ColumnName
      */
     public final static class PREFIXED_COLUMN {
-        public static final String ID          = TABLE_NAME.concat(COLUMN.ID);
-        public static final String ITEM_UUID   = TABLE_NAME.concat(COLUMN.ITEM_UUID);
-        public static final String ACTION      = TABLE_NAME.concat(COLUMN.ACTION);
-        public static final String MODEL       = TABLE_NAME.concat(COLUMN.MODEL);
+        public static final String ID = TABLE_NAME.concat(COLUMN.ID);
+        public static final String ITEM_UUID = TABLE_NAME.concat(COLUMN.ITEM_UUID);
+        public static final String ACTION = TABLE_NAME.concat(COLUMN.ACTION);
+        public static final String MODEL = TABLE_NAME.concat(COLUMN.MODEL);
         public static final String ACTION_DATE = TABLE_NAME.concat(COLUMN.ACTION_DATE);
 
         public static final String ALL_COLUMNS[] = {ID, ITEM_UUID, ACTION, MODEL, ACTION_DATE};
@@ -84,56 +85,71 @@ public class LogInfo {
             + COLUMN.MODEL + " INTEGER NOT NULL "
             + ")";
 
-    public static String DB_TRIGGER_LIST_INSERTION = "CREATE TRIGGER trackListInsertTrigger "
-            + " AFTER INSERT ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
-            + " BEGIN "
-            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
-            + COLUMN.ITEM_UUID + ","
-            + COLUMN.ACTION + ","
-            + COLUMN.MODEL + ","
-            + COLUMN.ACTION_DATE
-            + " )"
-            + " VALUES ( "
-            + " NEW." + ShoppingList.COLUMN.ID + ","
-            + " " + eActionType.INSERT.ordinal() + ","
-            + " " + eModelType.LIST.ordinal() + ","
-            + " strftime('%Y-%m-%dT%H:%M:%S', 'now')"
-            + " );"
-            + " END;";
 
-    public static String DB_TRIGGER_LIST_DELETION = "CREATE TRIGGER trackListDeletionTrigger "
-            + " AFTER DELETE ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
-            + " BEGIN "
-            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
-            + COLUMN.ITEM_UUID + ","
-            + COLUMN.ACTION + ","
-            + COLUMN.MODEL + ","
-            + COLUMN.ACTION_DATE
-            + " )"
-            + " VALUES ( "
-            + " OLD." + ShoppingList.COLUMN.ID + ","
-            + " " + eActionType.DELETE.ordinal() + ","
-            + " " + eModelType.LIST.ordinal() + ","
-            + " strftime('%Y-%m-%dT%H:%M:%S', 'now')"
-            + " );"
-            + " END;";
+    /**
+     * Create a trigger that is executed when an insertion to a specified table was made.
+     *
+     * @param _observedTable   the table that should be observed.
+     * @param _observedTableId the name of the column id of the observed table.
+     * @param _modelType       the type of the model.
+     * @return the trigger creation string.
+     */
+    public static String createTriggerInsertion(String _observedTable, String _observedTableId, eModelType _modelType) {
+        return "CREATE TRIGGER track"+ _observedTable + "InsertTrigger "
+                + " AFTER INSERT ON " + _observedTable + " FOR EACH ROW "
+                + " BEGIN "
+                + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
+                + COLUMN.ITEM_UUID + ","
+                + COLUMN.ACTION + ","
+                + COLUMN.MODEL + ","
+                + COLUMN.ACTION_DATE
+                + " )"
+                + " VALUES ( "
+                + " NEW." + _observedTableId + ","
+                + " " + eActionType.INSERT.ordinal() + ","
+                + " " + _modelType.ordinal() + ","
+                + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
+                + " );"
+                + " END;";
+    }
 
-    public static String DB_TRIGGER_LIST_UPDATE = "CREATE TRIGGER trackListUpdateTrigger "
-            + " AFTER UPDATE ON " + ShoppingList.TABLE_NAME + " FOR EACH ROW "
-            + " BEGIN "
-            + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
-            + COLUMN.ITEM_UUID + ","
-            + COLUMN.ACTION + ","
-            + COLUMN.MODEL + ","
-            + COLUMN.ACTION_DATE
-            + " )"
-            + " VALUES ( "
-            + " NEW." + ShoppingList.COLUMN.ID + ","
-            + " " + eActionType.UPDATE.ordinal() + ","
-            + " " + eModelType.LIST.ordinal() + ","
-            + " strftime('%Y-%m-%dT%H:%M:%S', 'now')"
-            + " );"
-            + " END;";
+    public static String createTriggerUpdate(String _observedTable, String _observedTableId, eModelType _modelType) {
+        return "CREATE TRIGGER track" + _observedTable + "UpdateTrigger "
+                + " AFTER UPDATE ON " + _observedTable + " FOR EACH ROW "
+                + " BEGIN "
+                + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
+                + COLUMN.ITEM_UUID + ","
+                + COLUMN.ACTION + ","
+                + COLUMN.MODEL + ","
+                + COLUMN.ACTION_DATE
+                + " )"
+                + " VALUES ( "
+                + " NEW." + _observedTableId + ","
+                + " " + eActionType.UPDATE.ordinal() + ","
+                + " " + _modelType.ordinal() + ","
+                + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
+                + " );"
+                + " END;";
+    }
+
+    public static String createTriggerDeletion(String _observedTable, String _observedTableId, eModelType _modelType) {
+        return "CREATE TRIGGER track" + _observedTable + "DeletionTrigger "
+                + " AFTER DELETE ON " + _observedTable + " FOR EACH ROW "
+                + " BEGIN "
+                + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
+                + COLUMN.ITEM_UUID + ","
+                + COLUMN.ACTION + ","
+                + COLUMN.MODEL + ","
+                + COLUMN.ACTION_DATE
+                + " )"
+                + " VALUES ( "
+                + " OLD." + _observedTableId + ","
+                + " " + eActionType.DELETE.ordinal() + ","
+                + " " + _modelType.ordinal() + ","
+                + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
+                + " );"
+                + " END;";
+    }
 
 
     public int getId() {
