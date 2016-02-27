@@ -46,7 +46,8 @@ public class CategoryProvider implements IInternalProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri _uri, String[] _projection, String _selection, String[] _selectionArgs, String _sortOrder) {
+    public synchronized Cursor query(@NonNull
+    Uri _uri, String[] _projection, String _selection, String[] _selectionArgs, String _sortOrder) {
         switch (mMatcher.match(_uri)) {
             case CATEGORY_DIRECTORY:
                 return mDatabase.query(Category.TABLE_NAME, _projection, _selection,
@@ -176,7 +177,7 @@ public class CategoryProvider implements IInternalProvider {
     }
 
     @Override
-    public String getType(@NonNull Uri _uri) {
+    public synchronized String getType(@NonNull Uri _uri) {
         switch (mMatcher.match(_uri)) {
             case CATEGORY_DIRECTORY:
                 return ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + InstalistProvider.BASE_VENDOR +
@@ -202,7 +203,7 @@ public class CategoryProvider implements IInternalProvider {
     }
 
     @Override
-    public Uri insert(@NonNull Uri _uri, ContentValues _values) {
+    public synchronized Uri insert(@NonNull Uri _uri, ContentValues _values) {
         if (_values == null) {
             return null;
         }
@@ -300,14 +301,15 @@ public class CategoryProvider implements IInternalProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri _uri, String _selection, String[] _selectionArgs) {
+    public synchronized int delete(@NonNull Uri _uri, String _selection, String[] _selectionArgs) {
         switch (mMatcher.match(_uri)) {
             case CATEGORY_ITEM: {
                 String categoryId = _uri.getLastPathSegment();
                 if ("-".equals(categoryId)) {
                     return 0;
                 }
-                String selection = SQLiteUtils.prependSelection(Category.COLUMN.ID + " = ?", _selection);
+                String selection = SQLiteUtils.prependSelection(
+                        Category.COLUMN.ID + " = ?", _selection);
                 String[] args = SQLiteUtils.prependSelectionArgs(categoryId, _selectionArgs);
                 return mDatabase.delete(Category.TABLE_NAME, selection, args);
             }
@@ -374,7 +376,8 @@ public class CategoryProvider implements IInternalProvider {
     }
 
     @Override
-    public int update(@NonNull Uri _uri, ContentValues _values, String _selection, String[] _selectionArgs) {
+    public synchronized int update(
+            @NonNull Uri _uri, ContentValues _values, String _selection, String[] _selectionArgs) {
         switch (mMatcher.match(_uri)) {
             case CATEGORY_ITEM: {
                 String categoryUUID = _uri.getLastPathSegment();

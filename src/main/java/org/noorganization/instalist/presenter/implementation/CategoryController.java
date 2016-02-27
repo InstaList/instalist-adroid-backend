@@ -25,7 +25,7 @@ public class CategoryController implements ICategoryController {
     private static CategoryController mInstance;
 
     private EventBus mBus;
-    private Context  mContext;
+    private Context mContext;
     private ContentResolver mResolver;
 
     private CategoryController(@NonNull Context _context) {
@@ -75,12 +75,16 @@ public class CategoryController implements ICategoryController {
             return null;
         }
         ArrayList<Category> rtn = new ArrayList<>(catIds.getCount());
-        catIds.moveToFirst();
-        while (!catIds.isAfterLast()) {
-            rtn.add(getCategoryByID(catIds.getString(catIds.getColumnIndex(Category.COLUMN.ID))));
-            catIds.moveToNext();
+
+        try {
+            catIds.moveToFirst();
+            while (!catIds.isAfterLast()) {
+                rtn.add(getCategoryByID(catIds.getString(catIds.getColumnIndex(Category.COLUMN.ID))));
+                catIds.moveToNext();
+            }
+        } finally {
+            catIds.close();
         }
-        catIds.close();
 
         // add default list
         rtn.add(new Category(null, "Default"));
@@ -109,13 +113,16 @@ public class CategoryController implements ICategoryController {
             return null;
         }
 
-        resultCursor.moveToFirst();
-        Category rtn = new Category();
-        rtn.mUUID = _uuid;
-        rtn.mName = resultCursor.getString(resultCursor.getColumnIndex(
-                Category.COLUMN.NAME));
-        resultCursor.close();
-        return rtn;
+        try {
+            resultCursor.moveToFirst();
+            Category rtn = new Category();
+            rtn.mUUID = _uuid;
+            rtn.mName = resultCursor.getString(resultCursor.getColumnIndex(
+                    Category.COLUMN.NAME));
+            return rtn;
+        } finally {
+            resultCursor.close();
+        }
     }
 
     @Override
@@ -149,7 +156,8 @@ public class CategoryController implements ICategoryController {
             ContentValues updateCV = new ContentValues(1);
             updateCV.put(Category.COLUMN.NAME, _newName);
             if (mContext.getContentResolver().update(
-                    Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI, "category/" + rtn.mUUID),
+                    Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI,
+                            "category/" + rtn.mUUID),
                     updateCV,
                     null, null) == 1) {
                 rtn.mName = _newName;
@@ -179,7 +187,7 @@ public class CategoryController implements ICategoryController {
             if (mContext.getContentResolver().delete(
                     Uri.withAppendedPath(
                             InstalistProvider.BASE_CONTENT_URI,
-                            "category/"+_toRemove.mUUID),
+                            "category/" + _toRemove.mUUID),
                     null,
                     null) == 1) {
 
@@ -206,7 +214,7 @@ public class CategoryController implements ICategoryController {
                     Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI, "category"),
                     null,
                     Category.COLUMN.NAME + " = ?",
-                    new String[]{ _search },
+                    new String[]{_search},
                     null);
         }
         if (catsToCheck == null) {
@@ -214,9 +222,11 @@ public class CategoryController implements ICategoryController {
                     "Returning true (= there is a duplicate).");
             return true;
         }
-        int count = catsToCheck.getCount();
-        catsToCheck.close();
-
-        return (count != 0);
+        try {
+            int count = catsToCheck.getCount();
+            return (count != 0);
+        } finally {
+            catsToCheck.close();
+        }
     }
 }
