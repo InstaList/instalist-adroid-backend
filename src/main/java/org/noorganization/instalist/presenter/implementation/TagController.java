@@ -4,12 +4,16 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
+import org.noorganization.instalist.model.Tag;
 import org.noorganization.instalist.presenter.ITagController;
 import org.noorganization.instalist.presenter.event.Change;
 import org.noorganization.instalist.presenter.event.TagChangedMessage;
-import org.noorganization.instalist.model.Tag;
 import org.noorganization.instalist.provider.internal.TagProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -153,5 +157,31 @@ public class TagController implements ITagController {
         tag.mName = cursor.getString(cursor.getColumnIndex(Tag.COLUMN.NAME));
         cursor.close();
         return tag;
+    }
+
+    @Override
+    public List<Tag> listAll() {
+        Cursor tagCursor = mResolver.query(
+                Uri.parse(TagProvider.MULTIPLE_TAG_CONTENT_URI),
+                Tag.COLUMN.ALL_COLUMNS,
+                null, null, null);
+        if (tagCursor == null) {
+            Log.e(getClass().getCanonicalName(), "Querying for tags failed. " +
+                    "Returning error.");
+            return null;
+        }
+        ArrayList<Tag> rtn = new ArrayList<>(tagCursor.getCount());
+
+        try {
+            while (tagCursor.moveToNext()) {
+                Tag tag = new Tag();
+                tag.mUUID = tagCursor.getString(tagCursor.getColumnIndex(Tag.COLUMN.ID));
+                tag.mName = tagCursor.getString(tagCursor.getColumnIndex(Tag.COLUMN.NAME));
+                rtn.add(tag);
+            }
+        } finally {
+            tagCursor.close();
+        }
+        return rtn;
     }
 }

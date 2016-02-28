@@ -35,7 +35,6 @@ public class ShoppingList {
         public static final String ALL_COLUMNS[] = {ID, NAME, CATEGORY};
     }
 
-
     public static final String DB_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
             COLUMN.ID + " TEXT PRIMARY KEY NOT NULL, " +
             COLUMN.NAME + " TEXT NOT NULL, " +
