@@ -34,9 +34,6 @@ android {
         versionName "1.0"
     }
 
-    sourceSets {
-        main.java.srcDirs += "instalist-comm/src/main/java"
-    }
     buildTypes {
         release {
             minifyEnabled false
