@@ -1,3 +1,3 @@
 [submodule "instalist-comm"]
 	path = instalist-comm
-	url = git@bitbucket.org:fhnoorg/instalist-comm.git
+	url = https://github.com/InstaList/instalist-comm.git
