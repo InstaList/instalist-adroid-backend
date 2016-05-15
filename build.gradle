@@ -16,9 +16,20 @@
 
 apply plugin: 'com.android.library'
 
+
+project.ext {
+    junitVersion = '4.12'
+    jacksonVersion = '2.7.1'
+    androidSupportLibVersion = '23.4.0'
+    greenrobotVersion = '2.4.0'
+    compileSdkVersion = 23
+    buildToolsVersion = '23.0.3'
+    targetSdkVersion = 23
+    minSdkVersion = 16
+}
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
 
     packagingOptions {
         exclude 'META-INF/ASL2.0'
@@ -28,8 +39,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 23
+        compileSdkVersion project.compileSdkVersion
+        buildToolsVersion project.buildToolsVersion
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -45,16 +58,19 @@ android {
 repositories {
 }
 
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'de.greenrobot:eventbus:2.4.0'
+    // test compiles
+    testCompile group: 'junit', name: 'junit', version: project.junitVersion
+    // all compiles
+    compile group: 'com.android.support', name: 'appcompat-v7', version: project.androidSupportLibVersion
+    compile group: 'de.greenrobot', name: 'eventbus', version: project.greenrobotVersion
 
-    compile 'com.fasterxml.jackson.core:jackson-core:2.7.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1-1'
-    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.7.1'
-    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.1'
-    compile 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.7.1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: project.jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: project.jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.1-1'
+    compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: project.jacksonVersion
+    compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: project.jacksonVersion
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: project.jacksonVersion
 }
