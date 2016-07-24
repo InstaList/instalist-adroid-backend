@@ -22,12 +22,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import org.noorganization.instalist.presenter.implementation.ControllerFactory;
 import org.noorganization.instalist.model.Category;
 import org.noorganization.instalist.model.ShoppingList;
+import org.noorganization.instalist.presenter.implementation.ControllerFactory;
 import org.noorganization.instalist.provider.InstalistProvider;
 
 import java.util.UUID;
+
 
 public class ICategoryControllerTest extends AndroidTestCase {
 
@@ -37,7 +38,6 @@ public class ICategoryControllerTest extends AndroidTestCase {
     private ContentResolver mResolver;
 
     public void setUp() throws Exception {
-        super.setUp();
         mResolver = getContext().getContentResolver();
         tearDown();
 
@@ -60,7 +60,7 @@ public class ICategoryControllerTest extends AndroidTestCase {
         mListHardwareStore = new ShoppingList(createdList.getLastPathSegment(),
                 "_TEST_hardware store", mCategoryWork);
 
-        mCategoryController = ControllerFactory.getCategoryController(mContext);
+        mCategoryController = ControllerFactory.getCategoryController(getContext());
     }
 
     public void tearDown() throws Exception {
@@ -70,39 +70,36 @@ public class ICategoryControllerTest extends AndroidTestCase {
                 ShoppingList.COLUMN.NAME + " LIKE '_TEST_%'",
                 null,
                 null);
-        assertNotNull(listsToDel);
-        listsToDel.moveToFirst();
-        while (!listsToDel.isAfterLast()) {
-            String listUUIDStr = listsToDel.getString(listsToDel.getColumnIndex(
-                    ShoppingList.COLUMN.ID));
-            String catUUIDStr = listsToDel.getString(listsToDel.getColumnIndex(
-                    ShoppingList.COLUMN.CATEGORY));
-            if (catUUIDStr == null) {
-                catUUIDStr = "-";
+        if (listsToDel != null && listsToDel.getCount() > 0) {
+            listsToDel.moveToFirst();
+            while (!listsToDel.isAfterLast()) {
+                String listUUIDStr = listsToDel.getString(listsToDel.getColumnIndex(
+                        ShoppingList.COLUMN.ID));
+                String catUUIDStr = listsToDel.getString(listsToDel.getColumnIndex(
+                        ShoppingList.COLUMN.CATEGORY));
+                if (catUUIDStr == null) {
+                    catUUIDStr = "-";
+                }
+                mResolver.delete(Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI,
+                        "category/" + catUUIDStr + "/list/" + listUUIDStr), null, null);
+                listsToDel.moveToNext();
             }
-            mResolver.delete(Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI,
-                    "category/" + catUUIDStr + "/list/" + listUUIDStr), null, null);
-            listsToDel.moveToNext();
+            listsToDel.close();
         }
-        listsToDel.close();
-
         Cursor categoryCursor = mResolver.query(Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI,
                 "category"), Category.COLUMN.ALL_COLUMNS, null, null, null);
 
-        if (categoryCursor == null) {
-            throw new IllegalStateException("No Category cursor found.");
-        }
-
-        if (categoryCursor.getCount() > 0) {
+        if (categoryCursor != null && categoryCursor.getCount() > 0) {
             categoryCursor.moveToFirst();
             do {
                 String categoryId = categoryCursor.getString(categoryCursor.getColumnIndex(Category.COLUMN.ID));
                 mResolver.delete(Uri.withAppendedPath(InstalistProvider.BASE_CONTENT_URI, "category/" + categoryId), null, null);
             } while (categoryCursor.moveToNext());
+            categoryCursor.close();
         }
-        categoryCursor.close();
 
     }
+
 
     public void testCreateCategory() throws Exception {
         assertNull(mCategoryController.createCategory(null));
@@ -124,6 +121,7 @@ public class ICategoryControllerTest extends AndroidTestCase {
         catCheck.close();
     }
 
+
     public void testGetCategoryById() throws Exception {
         //assertNull(mCategoryController.getCategoryByID(null));
         assertNull(mCategoryController.getCategoryByID(UUID.randomUUID().toString()));
@@ -131,6 +129,7 @@ public class ICategoryControllerTest extends AndroidTestCase {
 
         assertEquals(mCategoryWork, mCategoryController.getCategoryByID(mCategoryWork.mUUID));
     }
+
 
     public void testRenameCategory() throws Exception {
         assertNull(mCategoryController.renameCategory(null, ""));
@@ -150,6 +149,7 @@ public class ICategoryControllerTest extends AndroidTestCase {
                 Category.COLUMN.NAME)));
         catCheck.close();
     }
+
 
     public void testRemoveCategory() throws Exception {
         // Nothing should happen if a wrong input is given.
