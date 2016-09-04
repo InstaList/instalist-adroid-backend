@@ -16,8 +16,8 @@
 
 package org.noorganization.instalist.model;
 
-import org.noorganization.instalist.enums.eActionType;
-import org.noorganization.instalist.enums.eModelType;
+import org.noorganization.instalist.types.ActionType;
+import org.noorganization.instalist.types.ModelType;
 
 import java.util.Date;
 
@@ -41,12 +41,14 @@ public class LogInfo {
     /**
      * The action performed.
      */
-    private eActionType mAction;
+    @ActionType.Action
+    private int mAction;
 
     /**
      * The model that was affected.
      */
-    private eModelType mModelType;
+    @ModelType.Model
+    private int mModelType;
 
     /**
      * The date when this action was performed.
@@ -54,8 +56,8 @@ public class LogInfo {
     private Date mActionDate;
 
 
-    public LogInfo(int _id, String itemUuuid, eActionType action, eModelType modelType,
-            Date actionDate) {
+    public LogInfo(int _id, String itemUuuid, @ActionType.Action int action, @ModelType.Model int modelType,
+                   Date actionDate) {
         mId = _id;
         mItemUuuid = itemUuuid;
         mAction = action;
@@ -110,8 +112,8 @@ public class LogInfo {
      * @param _modelType       the type of the model.
      * @return the trigger creation string.
      */
-    public static String createTriggerInsertion(String _observedTable, String _observedTableId, eModelType _modelType) {
-        return "CREATE TRIGGER track"+ _observedTable + "InsertTrigger "
+    public static String createTriggerInsertion(String _observedTable, String _observedTableId, @ModelType.Model int _modelType) {
+        return "CREATE TRIGGER track" + _observedTable + "InsertTrigger "
                 + " AFTER INSERT ON " + _observedTable + " FOR EACH ROW "
                 + " BEGIN "
                 + " INSERT INTO " + LogInfo.TABLE_NAME + " ( "
@@ -122,14 +124,14 @@ public class LogInfo {
                 + " )"
                 + " VALUES ( "
                 + " NEW." + _observedTableId + ","
-                + " " + eActionType.INSERT.ordinal() + ","
-                + " " + _modelType.ordinal() + ","
+                + " " + ActionType.INSERT + ","
+                + " " + _modelType + ","
                 + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
                 + " );"
                 + " END;";
     }
 
-    public static String createTriggerUpdate(String _observedTable, String _observedTableId, eModelType _modelType) {
+    public static String createTriggerUpdate(String _observedTable, String _observedTableId, @ModelType.Model int _modelType) {
         return "CREATE TRIGGER track" + _observedTable + "UpdateTrigger "
                 + " AFTER UPDATE ON " + _observedTable + " FOR EACH ROW "
                 + " BEGIN "
@@ -141,14 +143,14 @@ public class LogInfo {
                 + " )"
                 + " VALUES ( "
                 + " NEW." + _observedTableId + ","
-                + " " + eActionType.UPDATE.ordinal() + ","
-                + " " + _modelType.ordinal() + ","
+                + " " + ActionType.UPDATE + ","
+                + " " + _modelType + ","
                 + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
                 + " );"
                 + " END;";
     }
 
-    public static String createTriggerDeletion(String _observedTable, String _observedTableId, eModelType _modelType) {
+    public static String createTriggerDeletion(String _observedTable, String _observedTableId, @ModelType.Model int _modelType) {
         return "CREATE TRIGGER track" + _observedTable + "DeletionTrigger "
                 + " AFTER DELETE ON " + _observedTable + " FOR EACH ROW "
                 + " BEGIN "
@@ -160,8 +162,8 @@ public class LogInfo {
                 + " )"
                 + " VALUES ( "
                 + " OLD." + _observedTableId + ","
-                + " " + eActionType.DELETE.ordinal() + ","
-                + " " + _modelType.ordinal() + ","
+                + " " + ActionType.DELETE + ","
+                + " " + _modelType + ","
                 + " strftime('%Y-%m-%dT%H:%M:%S', 'now') || 'Z'"
                 + " );"
                 + " END;";
@@ -184,19 +186,21 @@ public class LogInfo {
         mItemUuuid = itemUuuid;
     }
 
-    public eActionType getAction() {
+    @ActionType.Action
+    public int getAction() {
         return mAction;
     }
 
-    public void setAction(eActionType action) {
+    public void setAction(@ActionType.Action int action) {
         mAction = action;
     }
 
-    public eModelType getModelType() {
+    @ModelType.Model
+    public int getModelType() {
         return mModelType;
     }
 
-    public void setModelType(eModelType modelType) {
+    public void setModelType(@ModelType.Model int modelType) {
         mModelType = modelType;
     }
 
